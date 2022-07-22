@@ -1,0 +1,26 @@
+@ant-prefix: ant;
+
+@form-prefix-cls: ~'@{ant-prefix}-form';
+@form-item-prefix-cls: ~'@{form-prefix-cls}-item';
+
+@grid-columns: 24;
+
+.loop-form-item-label-col(@index) when (@index > 0) {
+  > .@{form-item-prefix-cls}-label {
+    &.@{ant-prefix}-col-@{index} {
+      flex-basis: percentage((@index / @grid-columns));
+    }
+  }
+  .loop-form-item-label-col((@index - 1));
+}
+
+.v-form {
+  .@{form-prefix-cls}-inline {
+    .@{form-prefix-cls}-item {
+      .loop-form-item-label-col(@grid-columns);
+    }
+  }
+  .@{ant-prefix}-btn + .@{ant-prefix}-btn {
+    margin-left: 20px;
+  }
+}
