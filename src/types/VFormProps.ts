@@ -1,6 +1,9 @@
 import { ComponentType } from '@t/ComponentType'
 import { ButtonProps as AntButtonProps } from 'ant-design-vue'
-import type { Rule as AntRule } from 'ant-design-vue/lib/form/interface'
+import type {
+  NamePath as AntNamePath,
+  Rule as AntRule
+} from 'ant-design-vue/lib/form/interface'
 import type { VNode } from 'vue'
 
 export declare type VJustify = 'space-around' | 'space-between' | 'center' | 'end' | 'start'
@@ -46,7 +49,7 @@ export interface VFormSechmaCbParam {
 
 export interface VFormSchema {
   // 对应 VFormProps.model 的字段
-  field: string;
+  field: string | AntNamePath;
   // 与 v-model:modelValue 绑定的字段
   modelField?: string;
   // 表单项文本标题
@@ -112,12 +115,14 @@ interface AntFormProps {
 }
 
 export interface VFormActionBtnProps extends AntButtonProps {
+  // 按钮上的文字
   text?: string;
 }
 
 export interface VFormActionProps {
   // 整行的布局选项，快捷设置：数字值时是为赋值 span="x"、字符串： { style: { width: '666px' } }
   actCol?: string | number | VColProps;
+  // 水平方向（flex 主轴）的布局
   justify?: VJustify;
   // falsely 不显示重置按钮，true 显示并使用默认 props，object 显示并使用给定 props
   resetBtn?: VFormActionBtnProps | boolean;
@@ -127,10 +132,38 @@ export interface VFormActionProps {
 
 export interface VFormProps extends AntFormProps {
   schemas: VFormSchema[];
+  // <v-form /> 内 model 的键严格由每个 schema.field 组成
+  strictModelKeysBySchemas?: boolean;
   // 是否禁用所有表单项
   disabled?: boolean;
   // falsely 不显示“提交、重置”按钮行， true 显示并使用默认配置， object 显示并使用给定配置
   action?: boolean | VFormActionProps;
   // 是否在 <v-form /> 挂载后自动聚焦第一个输入元素
   autoFocusFirstItem?: boolean;
+}
+
+export interface VFormActions {
+  // 验证
+  validate: (nameList?: AntNamePath[]) => Promise<unknown>;
+  // 清除验证
+  clearValidate: (nameList?: AntNamePath[]) => void;
+  // 验证 + 触发 submit， beforeSubmit 在 validate() 调用后和 submit() 前调用
+  validateThenSubmit: (params?: {
+    nameList?: AntNamePath[]
+    beforeSubmit?: () => Promise<unknown>
+  }) => Promise<unknown>
+  // 设置 model 字段值
+  setFieldsValue: (values: unknown) => void;
+  // 重置表单
+  resetFields: (nameList?: AntNamePath[]) => void;
+  // 在末尾追加 schema，可直接传单个 schema 也可传 schema 数组
+  appendSchemas: (schema: VFormSchema | VFormSchema[]) => void;
+  // 在 field 的 schema `前`增加
+  addSchemaBefore: (field: string, schemas: VFormSchema | VFormSchema[]) => void;
+  // 在 field 的 schema `后`增加
+  addSchemaAfter: (field: string, schemas: VFormSchema | VFormSchema[]) => void;
+  // 更新 schema
+  updateSchemas: (schemas: VFormSchema | VFormSchema[]) => void;
+  // 删除 schema
+  removeSchemas: (fields: string | string[]) => void;
 }

@@ -2,6 +2,8 @@
   "recommendations": [
     "vue.volar",
     "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode"
+    "usernamehw.errorlens",
+    "mikestead.dotenv",
+    "oderwat.indent-rainbow"
   ]
 }

@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 
-*-lock.*
+/*-lock.*
 
 # Editor directories and files
 .idea

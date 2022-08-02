@@ -5,14 +5,14 @@
     <ant-row :justify="justify">
       <ant-button
         v-bind="getResetBtnProps"
-        @click="emits('reset', $event)"
+        @click="emits('reset')"
       >
         {{ getResetBtnProps?.text }}
       </ant-button>
       <ant-button
         v-if="submitBtn"
         v-bind="getSubmitBtnProps"
-        @click="emits('submit', $event)"
+        @click="emits('submit')"
       >
         {{ getSubmitBtnProps?.text }}
       </ant-button>
@@ -65,11 +65,11 @@ const getSubmitBtnProps = computed(() => {
   return defaultSubmitBtnProps
 })
 const getResetBtnProps = computed(() => {
-  if (!props.submitBtn) {
+  if (!props.resetBtn) {
     return
   }
-  if (typeof props.submitBtn === 'object') {
-    return Object.assign(defaultResetBtnProps, props.submitBtn)
+  if (typeof props.resetBtn === 'object') {
+    return Object.assign(defaultResetBtnProps, props.resetBtn)
   }
   return defaultResetBtnProps
 })

@@ -31,16 +31,16 @@ const schemas: VFormSchema[] = [
     required: true,
     colon: false
   },
-  {
-    field: 'addr',
-    component: 'Input',
-    label: '地址',
-    rules: [
-      { required: true, message: 'PLZ input address.' }
-    ],
-    componentProps: {
-      disabled: true
-    }
-  }
+  // {
+  //   field: 'addr',
+  //   component: 'Input',
+  //   label: '地址',
+  //   rules: [
+  //     { required: true, message: 'PLZ input address.' }
+  //   ],
+  //   componentProps: {
+  //     disabled: true
+  //   }
+  // }
 ]
 </script>
