@@ -3,7 +3,8 @@ import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import eslintPlugin from 'vite-plugin-eslint'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-
+import { ViteEjsPlugin } from 'vite-plugin-ejs'
+import fs from 'fs'
 function resolveDirs (...dir: string[]) {
   return resolve(process.cwd(), ...dir)
 }
@@ -25,6 +26,9 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
-    eslintPlugin()
+    eslintPlugin(),
+    ViteEjsPlugin({
+      loadingHTMLFragement: fs.readFileSync('src/loading.html')
+    })
   ]
 })

@@ -20,6 +20,7 @@
   "rules": {
     "quotes": ["warn", "single"],
     "semi": ["warn", "never"],
-    "vue/no-unused-components": "warn"
+    "vue/no-unused-components": "warn",
+    "indent": ["warn", 2]
   }
 }
