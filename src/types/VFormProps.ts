@@ -7,6 +7,8 @@ import type {
 import type { VNode } from 'vue'
 
 export declare type VJustify = 'space-around' | 'space-between' | 'center' | 'end' | 'start'
+export declare type ComponentSlots = Record<string, VNode | ((param: VFormSechmaCbParam) => undefined | VNode)>
+export { AntNamePath }
 
 interface VBasicColProps {
   // flex 布局填充
@@ -14,7 +16,7 @@ interface VBasicColProps {
   // 栅格左侧的间隔格数
   offset?: number;
   // flex 栅格顺序
-  order?: 	number;
+  order?: number;
   // 	栅格向左移动格数
   pull?: number;
   // 栅格向右移动格数
@@ -44,14 +46,14 @@ export interface VColProps extends VBasicColProps {
 export interface VFormSechmaCbParam {
   schema?: VFormSchema;
   schemas?: VFormSchema[];
-  model?: Record<string, unknown>;
+  model?: unknown;
 }
 
 export interface VFormSchema {
   // 对应 VFormProps.model 的字段
   field: string | AntNamePath;
   // 与 v-model:modelValue 绑定的字段
-  modelField?: string;
+  modelField?: string | AntNamePath;
   // 表单项文本标题
   label?: string | VNode | VNode[];
   // 表单项次级文本标题
@@ -60,6 +62,7 @@ export interface VFormSchema {
   labelCol?: VColProps | string | number;
   component?: ComponentType;
   componentProps?: Record<string, unknown>;
+  componentSlots?: ComponentSlots;
   required?: boolean;
   // 该表单项验证规则，会覆盖 <v-form /> 的 rules
   rules?: AntRule[];

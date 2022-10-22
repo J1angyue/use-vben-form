@@ -27,7 +27,10 @@ function set(compName: ComponentType, component: Component) {
   componentMap.set(compName, component)
 }
 
-function get(compName: ComponentType) {
+function get(compName?: ComponentType) {
+  if (!compName) {
+    return
+  }
   return componentMap.get(compName)
 }
 

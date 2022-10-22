@@ -4,23 +4,29 @@
     :schemas="schemas"
     :model="model"
     :rules="rules"
+    strict-model-keys-by-schemas
     name="uForm1"
   />
 </template>
 
 <script lang="ts" setup>
 import { VFormSchema } from '@t/VFormProps'
-import { reactive } from 'vue'
+import { h } from 'vue'
 
-const model = reactive({
+const model = {
   nam: '张三',
-  addr: '山东省临沂市'
-})
+  addr: {
+    usually: {
+      province: '山东',
+      city: '临沂'
+    }
+  }
+}
 
 const rules = {
-  addr: [
-    { required: true, message: 'Please input address.' }
-  ]
+  // 'addr[usually[province]]': [
+  //   { required: true, message: 'Please input address.' }
+  // ]
 }
 
 const schemas: VFormSchema[] = [
@@ -29,18 +35,25 @@ const schemas: VFormSchema[] = [
     component: 'Input',
     label: '姓名',
     required: true,
-    colon: false
+    colon: false,
+    // componentProps: {
+    //   addonBefore: 'http://'
+    // },
+    componentSlots: {
+      addonBefore: () => h('button', ['addonBefore']),
+      addonAfter: () => h('button', ['addonAfter'])
+    }
   },
-  // {
-  //   field: 'addr',
-  //   component: 'Input',
-  //   label: '地址',
-  //   rules: [
-  //     { required: true, message: 'PLZ input address.' }
-  //   ],
-  //   componentProps: {
-  //     disabled: true
-  //   }
-  // }
+  {
+    field: ['addr', 'usually', 'province'],
+    component: 'Input',
+    label: '地址',
+    // rules: [
+    //   { required: true, message: 'PLZ input address.' }
+    // ],
+    componentProps: {
+      disabled: false
+    }
+  }
 ]
 </script>

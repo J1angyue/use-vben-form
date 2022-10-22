@@ -6,8 +6,8 @@
   >
     <slot name="header" />
     <v-form-item
-      v-for="schema in schemas"
-      :key="schema.field"
+      v-for="schema in schemasRef"
+      :key="schema.field.toString()"
       :schema="schema"
       :form-disabled="disabled"
       :model="getBindProps.model"
@@ -34,7 +34,7 @@ import { Form as AntForm, FormProps } from 'ant-design-vue'
 import VFormItem from '@c/FormItem/VFormItem.vue'
 import VFormAction from '@c/VFormAction/VFormAction.vue'
 import type { VFormProps, VFormSchema, VFormActions } from '@t/VFormProps'
-import { cloneDeep, merge } from 'lodash'
+import { cloneDeep, get, merge, set } from 'lodash'
 import { NamePath } from 'ant-design-vue/lib/form/interface'
 
 const attrs = useAttrs()
@@ -61,50 +61,36 @@ const props = defineProps({
 
 const antFormRef = ref<VFormActions | null>(null)
 
-const schemasRef = ref<VFormSchema[]>([])
+const schemasRef = ref<VFormSchema[]>(props.schemas)
 watch(
   () => props.schemas,
   (newSchemas) => (schemasRef.value = cloneDeep(unref(newSchemas))),
   { deep: false }
 )
 
-const modelRef = ref(getFormModel())
+const modelRef = ref(getFormModel(attrs.model))
 watch(
   () => attrs.model,
-  (newModel) => (modelRef.value = cloneDeep(unref(newModel))),
+  (model) => (modelRef.value = getFormModel(model)),
   { deep: false }
 )
 
 const getBindProps = computed(
   () => Object.assign(
+    {},
+    attrs,
+    (props as VFormProps),
     {
       model: modelRef.value
     },
-    attrs,
-    (props as VFormProps)
   ) as FormProps
 )
 const getActionProps = computed(() => {
-  if(!props.action || typeof props.action === 'boolean') {
+  if (!props.action || typeof props.action === 'boolean') {
     return
   }
   return props.action
 })
-
-function insertSchemas(
-  schemas: VFormSchema | VFormSchema[],
-  schemaList: VFormSchema[] | Ref<VFormSchema[]>,
-  index: number
-) {
-  schemaList = unref(schemaList)
-  if (index > schemaList.length || index < 0) {
-    return
-  }
-  Array.isArray(schemas)
-    ? schemaList.splice(index, 0, ...schemas)
-    : schemaList.splice(index, 0, schemas)
-}
-
 
 function validate(nameList?: NamePath[]) {
   return Promise.resolve(unref(antFormRef.value)?.validate(nameList))
@@ -123,11 +109,26 @@ function validateThenSubmit(
 ) {
   return validate(nameList).then(beforeSubmit).then()
 }
+
 function setFieldsValue(values: unknown) {
   merge(modelRef.value, values)
 }
 function resetFields(nameList?: NamePath[]) {
   unref(antFormRef.value)?.resetFields(nameList)
+}
+
+function insertSchemas(
+  schemas: VFormSchema | VFormSchema[],
+  schemaList: VFormSchema[] | Ref<VFormSchema[]>,
+  index: number
+) {
+  schemaList = unref(schemaList)
+  if (index > schemaList.length || index < 0) {
+    return
+  }
+  Array.isArray(schemas)
+    ? schemaList.splice(index, 0, ...schemas)
+    : schemaList.splice(index, 0, schemas)
 }
 function appendSchemas(schemas: VFormSchema | VFormSchema[]) {
   insertSchemas(schemas, schemasRef, unref(schemasRef).length)
@@ -175,14 +176,18 @@ const formActions: VFormActions = {
   removeSchemas
 }
 
-function getFormModel() {
-  let model = unref(attrs.model)
+function getFormModel(model: unknown) {
+  model = unref(model)
   if (!model) {
     return
   }
   model = cloneDeep(model)
   if (props.strictModelKeysBySchemas) {
-    // TODO: 将不存在于 schemas 中的 model 键删掉
+    const temp = {}
+    for (const schema of unref(schemasRef)) {
+      set(temp, schema.field, get(model, schema.field))
+    }
+    model = temp
   }
   return model
 }

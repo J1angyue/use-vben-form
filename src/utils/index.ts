@@ -1,7 +1,7 @@
 import { App, Component } from 'vue'
 import { VColProps } from '@t/VFormProps'
 
-export function withInstall (comp: Component, name: string): Component {
+export function withInstall(comp: Component, name: string): Component {
   if (!comp || !name) {
     return {}
   }

@@ -18,9 +18,29 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
-    "quotes": ["warn", "single"],
-    "semi": ["warn", "never"],
+    "quotes": [
+      "warn",
+      "single"
+    ],
+    "semi": [
+      "warn",
+      "never"
+    ],
     "vue/no-unused-components": "warn",
-    "indent": ["warn", 2]
+    "indent": [
+      "warn",
+      2
+    ],
+    "vue/max-attributes-per-line": [
+      "warn",
+      {
+        "singleline": {
+          "max": 1
+        },
+        "multiline": {
+          "max": 1
+        }
+      }
+    ]
   }
 }
